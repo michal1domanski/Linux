@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <alchemy/pipe.h>
 
 int main(){
 	int a;
@@ -19,5 +20,7 @@ int main(){
 			arr[i+1] = (int*)malloc(2*sizeof(int));
 		}
 		printf("czas: %d\t priorytet: %d\n", arr[i][0], arr[i][1]);
+		char name ="array";
+		rt_pipe_create(&arr, &name, P_MINOR_AUTO, 0);
 	}
 }
