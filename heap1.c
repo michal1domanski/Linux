@@ -8,7 +8,7 @@
 void toheap(void *arg) {
   RT_HEAP heap;
   
-  rt_heap_create(&heap, "myheap", 100, H_SHARED | H_PRIO);
+  rt_heap_create(&heap, "myheap", 100, H_SINGLE | H_PRIO);
   
   RT_MUTEX mutex;
   rt_mutex_create(&mutex, "mymutex");
