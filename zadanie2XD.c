@@ -1,12 +1,16 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <alchemy/heap.h>
+
+RT_HEAP stosek;
 
 int main(){
 	int a;
 	int **arr;
 	arr = (int**) malloc(sizeof(int*));
 	arr[0] = (int*) malloc(2*sizeof(int));
-
+	char name[100] = "stosik";
+	rt_heap_create(&stosek, name, sizeof(char), H_SINGLE);
 	for(int i=0; a!=1; i++){
 		printf("podaj czas trwania: ");
 		scanf("%d", &arr[i][0]);
@@ -19,6 +23,7 @@ int main(){
 			arr[i+1] = (int*)malloc(2*sizeof(int));
 		}
 		printf("czas: %d\t priorytet: %d\n", arr[i][0], arr[i][1]);
+		
 	}
 	for(int i=0; i<3; i++){
 		for(int j=0; j<2;j++){
