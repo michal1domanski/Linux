@@ -20,7 +20,7 @@ void toheap(void *arg) {
   short counter1 = 0;
   short counter2 = 0;
   
-  printf("cośtam sobie dodaję\n");  
+  printf("cos sobie dodaj\n");  
   while(1) {
     rt_task_sleep(1000000000LL);
 	lastmod++;

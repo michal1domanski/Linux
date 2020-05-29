@@ -7,8 +7,8 @@
 
 void fromhealp(void *arg) {
 
-	printf("czekam na stertę\n");
-	printf("musial debil");
+	printf("czekam na sterte\n");
+	printf("musial debil\n");
 	RT_HEAP heap;
 	rt_heap_bind(&heap, "myheap", TM_INFINITE);
 
