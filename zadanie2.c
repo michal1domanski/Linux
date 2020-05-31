@@ -5,11 +5,34 @@
 #include <alchemy/timer.h>
 #include <alchemy/sem.h>
 #include <alchemy/heap.h>
+#include <alchemy/mutex.h>
 
 RT_TASK zadania[3];
 RT_HEAP stos;
 RT_SEM sem;
 int licznik;
+
+void fromheap(void *arg) {
+	printf("czekam na sterte\n");
+	RT_HEAP heap;
+	rt_heap_bind(&heap, "myheap", TM_INFINITE);
+
+	printf("czekam na mutex\n");
+	RT_MUTEX mutex;
+	rt_mutex_bind(&mutex, "mymutex", TM_INFINITE);
+	
+	char *ptr;
+	char lastmod = 255;
+	rt_heap_alloc(&heap, 0, TM_INFINITE, (void**)&ptr);
+	while(1){
+		rt_mutex_acquire(&mutex, TM_INFINITE);
+		if (ptr[2] != 1) {
+			printf("%hi, %hi\n", ptr[0], ptr[1]);
+		}
+		rt_mutex_release(&mutex);
+		rt_task_sleep(10000000000LL);
+	}
+}
 
 void serve(void *arg) {
 	RT_TASK_INFO info;
@@ -32,37 +55,25 @@ void serve(void *arg) {
 }
 
 int main(int a, char** b) {
-	char name1[100] = "stosiwo1";
-	rt_heap_create(&stos, name1, sizeof(char), H_SINGLE);
-	rt_heap_bind(&stos, &stosek, TM_INFINITE);
 	mlockall(MCL_CURRENT | MCL_FUTURE);
-	rt_sem_create(&sem, "somename", 2, S_PRIO);
 	
-	
+	/*
 	char name[3][10];
 	sprintf(name[0], "zad 1");
 	sprintf(name[1], "zad 2");
 	sprintf(name[2], "zad 3");
 	for(int i=0;i<3;i++){
-		/*char name[10];
-		snprintf(name, 5, "zad %d",i);*/
+		char name[10];
+		snprintf(name, 5, "zad %d",i);
 		rt_task_create(&zadania[i], name[i], 0, 10, 0);
 		rt_task_set_periodic(&zadania[i], TM_NOW, 5000000000LL);
 		rt_task_start(&zadania[i], &serve, 0);
-	}
-	/*
-	rt_task_create(&zadania[0], name[0], 0, 10, 0);
-	rt_task_set_periodic(&zadania[0], TM_NOW, 5000000000LL);
-	rt_task_start(&zadania[0], &serve, 0);
+	}*/
+	RT_TASK task;
+	rt_task_create(&task, "fromtask", 0, 10, 0);
+	rt_task_start(&task, &fromheap, NULL);
 
-	rt_task_create(&zadania[1], name[1], 0, 20, 0);
-	rt_task_set_periodic(&zadania[1], TM_NOW, 5000000000LL);
-	rt_task_start(&zadania[1], &serve, 0);
 
-	rt_task_create(&zadania[2], name[2], 0, 30, 0);
-	rt_task_set_periodic(&zadania[2], TM_NOW, 5000000000LL);
-	rt_task_start(&zadania[2], &serve, 0);
-	*/
 	pause();
 }	
 

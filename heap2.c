@@ -18,19 +18,17 @@ void fromhealp(void *arg) {
   
 	char* ptr;  
 	char lastmod = 255;
-  
 	rt_heap_alloc(&heap, 0, TM_INFINITE, (void**)&ptr);  
 	while(1) {    			
 		rt_mutex_acquire(&mutex, TM_INFINITE);
     		if (ptr[0] != lastmod) {
       			printf("%hi, %hi\n", ptr[1], ptr[3]);
 	  		lastmod = ptr[0];
-			}
+		}
     		rt_mutex_release(&mutex);
 		rt_task_sleep(1000000000LL);
-		}
-	}	
-
+	}
+}	
 int main(int a, char** b) {
   	mlockall(MCL_CURRENT | MCL_FUTURE);
   
