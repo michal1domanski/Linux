@@ -46,12 +46,11 @@ void fun1(void *arg) {
 	for(i=0;i<*(int*)arg;i++) {
 		zadanie1++;
 		/*printf("%s = %i\n", info.name, zadanie1 );*/
-			
+
 			rt_task_wait_period(NULL);
 	}
 	end[0] = rt_timer_ticks2ns(rt_timer_read());
-	printf("%llu\n",end[0]);
-	printf("Czas trwania zadania 1: %llu\n",end[0]-start[0]);
+	printf("Czas zakonczenia zadania 1: %llu\n",end[0]);
 }
 void fun2(void *arg) {
 	start[1] = rt_timer_ticks2ns(rt_timer_read());
@@ -65,8 +64,7 @@ void fun2(void *arg) {
 			rt_task_wait_period(NULL);
 	}
 	end[1] = rt_timer_ticks2ns(rt_timer_read());
-	printf("%llu\n",end[1]);
-	printf("Czas trwania zadania 2: %llu\n",end[1]-start[1]);
+	printf("Czas zakonczenia zadania 2: %llu\n",end[1]);
 }
 void fun3(void *arg) {
 	start[2] = rt_timer_ticks2ns(rt_timer_read());
@@ -80,7 +78,7 @@ void fun3(void *arg) {
 			rt_task_wait_period(NULL);
 	}
 	end[2] = rt_timer_ticks2ns(rt_timer_read());
-	printf("Czas trwania zadania 3: %llu\n",end[2]-start[2]);
+	printf("Czas zakonczenia zadania 3: %llu\n",end[2]);
 }
 void fun4(void *arg) {
 	start[3] = rt_timer_ticks2ns(rt_timer_read());
@@ -94,7 +92,7 @@ void fun4(void *arg) {
 			rt_task_wait_period(NULL);
 	}
 	end[3] = rt_timer_ticks2ns(rt_timer_read());
-	printf("Czas trwania zadania 4: %llu\n",end[3]-start[3]);
+	printf("Czas zakonczenia zadania 4: %llu\n",end[3]);
 }
 void fun5(void *arg) {
 	start[4] = rt_timer_ticks2ns(rt_timer_read());
@@ -108,7 +106,7 @@ void fun5(void *arg) {
 			rt_task_wait_period(NULL);
 	}
 	end[4] = rt_timer_ticks2ns(rt_timer_read());
-	printf("Czas trwania zadania 5: %llu\n",end[4]-start[4]);
+	printf("Czas zakonczenia zadania 5: %llu\n",end[4]);
 }
 void fun6(void *arg) {
 	start[5] = rt_timer_ticks2ns(rt_timer_read());
@@ -122,7 +120,7 @@ void fun6(void *arg) {
 			rt_task_wait_period(NULL);
 	}
 	end[5] = rt_timer_ticks2ns(rt_timer_read());
-	printf("Czas trwania zadania 6: %llu\n",end[5]-start[5]);
+	printf("Czas zakonczenia zadania 6: %llu\n",end[5]);
 }
 void fun7(void *arg) {
 	start[6] = rt_timer_ticks2ns(rt_timer_read());
@@ -136,7 +134,7 @@ void fun7(void *arg) {
 			rt_task_wait_period(NULL);
 	}
 	end[6] = rt_timer_ticks2ns(rt_timer_read());
-	printf("Czas trwania zadania 7: %llu\n",end[6]-start[6]);
+	printf("Czas zakonczenia zadania 7: %llu\n",end[6]);
 }
 void fun8(void *arg) {
 	start[7] = rt_timer_ticks2ns(rt_timer_read());
@@ -150,7 +148,7 @@ void fun8(void *arg) {
 			rt_task_wait_period(NULL);
 	}
 	end[7] = rt_timer_ticks2ns(rt_timer_read());
-	printf("Czas trwania zadania 8: %llu\n",end[7]-start[7]);	
+	printf("Czas zakonczenia zadania 8: %llu\n",end[7]);
 }
 void fun9(void *arg) {
 	start[8] = rt_timer_ticks2ns(rt_timer_read());
@@ -164,10 +162,10 @@ void fun9(void *arg) {
 			rt_task_wait_period(NULL);
 	}
 	end[8] = rt_timer_ticks2ns(rt_timer_read());
-	printf("Czas trwania zadania 9: %llu\n",end[8]-start[8]);
+	printf("Czas zakonczenia zadania 9: %llu\n",end[8]);
 }
 void fun0(void *arg) {
-	start[9] = rt_timer_read();
+	start[9] = rt_timer_ticks2ns(rt_timer_read());
 	printf("Czas rozpoczecia zadania 0: %llu\n",start[9]);
 	int i;
 	RT_TASK_INFO info;
@@ -177,8 +175,8 @@ void fun0(void *arg) {
 		/*printf("%s = %i\n", info.name, zadanie0 );*/
 			rt_task_wait_period(NULL);
 	}
-	end[9] = rt_timer_read();
-	printf("Czas trwania zadania 0: %llu\n",end[9]-start[9]);
+	end[9] = rt_timer_ticks2ns(rt_timer_read());
+	printf("Czas zakonczenia zadania 0: %llu\n",end[9]);
 }
 
 typedef void (*FunctionCallback)();
@@ -187,7 +185,7 @@ FunctionCallback functions[] = {&fun0, &fun1, &fun2, &fun3, &fun4, &fun5, &fun6,
 int main(int a, char** b) {
 	int i;
 	int j;
-	
+
 	long** mat=malloc(10*sizeof(long*));
 	for(i=0;i<10;i++)
 		mat[i]=malloc(4*sizeof(long));
@@ -195,16 +193,15 @@ int main(int a, char** b) {
 	int lokalna = 0;
 	mlockall(MCL_CURRENT | MCL_FUTURE);
 
-	file=fopen("zadanie1.txt", "r");	
+	file=fopen("zadanie1.txt", "r");
 	for(i=0; i<10; i++){
 		for(j=0;j<4;j++){
 			if (!fscanf(file,"%li", &mat[i][j]))
 				break;
-			/*printf("%li\n",mat[i][j]);*/
 		}
 	}
 	fclose(file);
-	
+
 	for(i=0;i<10;i++){
 		char name[10];
 		snprintf(name, 10, "zadanie%d", i);
@@ -216,7 +213,7 @@ int main(int a, char** b) {
 	}
 
 	rt_timer_spin(1000000000);
-	
+
 	for(i=0; i<10; i++){
 		rt_task_start(&zadania[i], functions[i], &mat[i][3]);
 	}

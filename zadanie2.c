@@ -8,6 +8,7 @@
 #include <alchemy/mutex.h>
 
 RT_TASK zadania[3];
+RT_TASK task;
 RT_HEAP stos;
 RT_SEM sem;
 int licznik;
@@ -17,14 +18,14 @@ void serve(void *arg) {
 	rt_task_inquire(rt_task_self(), &info);
 
 	printf("%s utworzone. \n", info.name);
-	
+
 	while(1) {
 		printf("%s czeka na semafor.\n", info.name);
 		rt_sem_p(&sem, TM_INFINITE);
 		printf("%S otrzymalo semafor.\n", info.name);
-		
+
 		printf("%s ustawia licznik na %i.\n", info.name, ++licznik);
-		
+
 		rt_task_wait_period(NULL);
 
 		rt_sem_v(&sem);
@@ -32,8 +33,16 @@ void serve(void *arg) {
 	}
 }
 
+int globalna = 0;
 
-void fromheap(void *arg) {
+void fun(void *arg) {
+	globalna = globalna + 1;
+	printf("globalna = %d\n", globalna);
+	rt_timer_spin((*((long long*)(arg))));
+}
+
+int main(int a, char** b) {
+	mlockall(MCL_CURRENT | MCL_FUTURE);
 	printf("czekam na sterte\n");
 	RT_HEAP heap;
 	rt_heap_bind(&heap, "myheap", TM_INFINITE);
@@ -41,32 +50,33 @@ void fromheap(void *arg) {
 	printf("czekam na mutex\n");
 	RT_MUTEX mutex;
 	rt_mutex_bind(&mutex, "mymutex", TM_INFINITE);
-	
-	char *ptr;
-	char lastmod = 255;
+
+	unsigned long long int* ptr;
+	char lastmod = 0;
 	rt_heap_alloc(&heap, 0, TM_INFINITE, (void**)&ptr);
+	SRTIME start;
+	SRTIME end;
+	int i = 1;
 	while(1){
 		rt_mutex_acquire(&mutex, TM_INFINITE);
 		if (ptr[0] != lastmod) {
-			RT_TASK zadanko;
-			rt_task_create(&zadanko, "cykdwojeczka", 0, ptr[1], 0);
-			rt_task_set_periodic(&zadanko, TM_NOW, TM_NOW+ptr[0]);
-			rt_task_start(&zadanko, &serve, NULL);
-			printf("%hi, %hi\n", ptr[0], ptr[1]);
+			start = rt_timer_ticks2ns(rt_timer_read());
+			printf("rozpoczecie zadania %d = %llu\n", i, start);
+			RT_TASK task;
+			rt_task_create(&task, "zadanie", 0, ptr[1], 0);
+			rt_task_set_periodic(&task, TM_NOW, TM_NOW+ptr[0]);
+			rt_task_start(&task, &fun, &ptr[0]);
+			printf("czas: %llu, priorytet: %d\n", ptr[0], ptr[1]);
 			ptr[0] = lastmod;
+			end = rt_timer_ticks2ns(rt_timer_read());
+			printf("zakonczenie zadania %d = %llu\n", i, end);
+			i = i + 1;
 		}
 		rt_mutex_release(&mutex);
-		rt_task_sleep(10000000000LL);
+		rt_task_sleep(1000000000LL);
 	}
 
-}
-
-
-int main(int a, char** b) {
-	mlockall(MCL_CURRENT | MCL_FUTURE);
-	
-	/*
-	char name[3][10];
+	/*char name[3][10];
 	sprintf(name[0], "zad 1");
 	sprintf(name[1], "zad 2");
 	sprintf(name[2], "zad 3");
@@ -75,15 +85,11 @@ int main(int a, char** b) {
 		snprintf(name, 5, "zad %d",i);
 		rt_task_create(&zadania[i], name[i], 0, 10, 0);
 		rt_task_set_periodic(&zadania[i], TM_NOW, 5000000000LL);
-		rt_task_start(&zadania[i], &serve, 0);
+		rt_task_start(&zadania[i], &fromheap, 0);
 	}*/
-	RT_TASK task;
-	rt_task_create(&task, "fromtask", 0, 10, 0);
-	rt_task_start(&task, &fromheap, NULL);
-
 
 	pause();
-}	
+}
 
 
 
