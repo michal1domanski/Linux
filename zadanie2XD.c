@@ -14,24 +14,24 @@ void toheap(void *arg) {
 	RT_MUTEX mutex;
 	rt_mutex_create(&mutex, "mymutex");
 
-	unsigned long long int* ptr;
+	uint64_t* ptr;
 	rt_heap_alloc(&heap, 0, TM_INFINITE, (void**)&ptr);
 
-	int **arr;
-	arr = (int**) malloc(sizeof(int*));
-	arr[0] = (int*) malloc(2*sizeof(int));
+	uint64_t **arr;
+	arr = (uint64_t**) malloc(sizeof(uint64_t*));
+	arr[0] = (uint64_t*) malloc(2*sizeof(uint64_t));
 	char name[100] = "stosik";
 	int i = 0;
 	while(1) {
 		printf("podaj czas trwania zadania\n");
-		scanf("%d", &arr[i][0]);
+		scanf("%llu", &arr[i][0]);
 		printf("podaj priorytet zadania\n");
-		scanf("%d", &arr[i][1]);
+		scanf("%llu", &arr[i][1]);
 
-		arr = realloc(arr, (i+2)*sizeof(int*));
-		arr[i+1] = (int*)malloc(2*sizeof(int));
+		arr = realloc(arr, (i+2)*sizeof(uint64_t*));
+		arr[i+1] = (uint64_t*)malloc(2*sizeof(uint64_t));
 
-		printf("czas: %d\t priorytet: %d\n", arr[i][0], arr[i][1]);
+		printf("czas: %llu\t priorytet: %d\n", arr[i][0], arr[i][1]);
 		rt_mutex_acquire(&mutex, TM_INFINITE);
 		ptr[0] = arr[i][0];
 		ptr[1] = arr[i][1];

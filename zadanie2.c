@@ -51,7 +51,7 @@ int main(int a, char** b) {
 	RT_MUTEX mutex;
 	rt_mutex_bind(&mutex, "mymutex", TM_INFINITE);
 
-	unsigned long long int* ptr;
+	uint64_t* ptr;
 	char lastmod = 0;
 	rt_heap_alloc(&heap, 0, TM_INFINITE, (void**)&ptr);
 	SRTIME start;
