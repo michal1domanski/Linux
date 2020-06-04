@@ -34,7 +34,7 @@ int main(int a, char** b){
 		scanf("%llu", &usr_inp.start);
 		printf("podaj czas trwania: ");
 		scanf("%llu", &usr_inp.duration);
-		printf("ty stara kurwo zmarnowalas mi 20 lat zycia podaj deadline: ");
+		printf("podaj deadline: ");
 		scanf("%llu", &usr_inp.deadline);
 
 		usr_inp.start *= 1000000;
