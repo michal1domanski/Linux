@@ -10,7 +10,7 @@ const int TASK_MAX = 55;
 
 typedef union{
 	struct{
-		uint64_t prio, time;
+		uint64_t start, duration, deadline;
 	};
 	long long ind;
 }task_data;
@@ -30,18 +30,19 @@ int main(int a, char** b){
 	rt_heap_alloc(&heap, 0, TM_INFINITE, (void**)&ptr);
 	while(1){
 		task_data usr_inp;
+		printf("podaj czas rozpoczecia: ");
+		scanf("%llu", &usr_inp.start);
 		printf("podaj czas trwania: ");
-		scanf("%llu", &usr_inp.time);
-		printf("%llu\n", time);
-		printf("%s\n", &usr_inp.time);
-		printf("podaj priorytet: ");
-		scanf("%d", &usr_inp.prio);
+		scanf("%llu", &usr_inp.duration);
+		printf("ty stara kurwo zmarnowalas mi 20 lat zycia podaj deadline: ");
+		scanf("%llu", &usr_inp.deadline);
+
+		usr_inp.start *= 1000000;
+		usr_inp.duration *= 1000000;
+		usr_inp.deadline *= 1000000;
+
 		rt_mutex_acquire(&mutex, TM_INFINITE);
 		long long ind = ++ptr[0].ind;
-		if(ind == TASK_MAX) {
-			ind = 1;
-			ptr[0].ind = ind;
-		}
 		ptr[ind] = usr_inp;
 		rt_mutex_release(&mutex);
 		rt_sem_v(&sem);

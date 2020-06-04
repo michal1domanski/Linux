@@ -48,7 +48,6 @@ void fromheap(void *arg){
 		ind = (ind + 1) % TASK_MAX;
 		uint64_t *time = malloc(sizeof(uint64_t));
 		*time = ptr[ind].time;
-		printf("%llu\n", ptr[ind].time);
 		char name[12];
 		sprintf(name, "zadanie %d", zadanie);
 		printf("%s\n", &ptr[ind].time);

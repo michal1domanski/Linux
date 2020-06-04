@@ -1,20 +1,20 @@
+/*wojszwilo debil*/
 #include <stdio.h>
 #include <unistd.h>
+#include <sys/mman.h>
+#include <alchemy/task.h>
+#include <alchemy/heap.h>
+#include <alchemy/mutex.h>
+#include <alchemy/sem.h>
 
-int main(){
-	while(1){
-	printf("\n");
-	printf("|\\     /|  |   |  /---   |        /\\        |\n");
-	printf("|  \\ /  |  |   |  \\___   |      /    \\      |\n");
-	printf("|       |  |   |      \\  |    / ------ \\    |\n");
-	printf("|       |   \\_/    ___/  |  /            \\  |___\n");
-	printf("\n");
-	printf("|---\\   |----  |---\\  |  |\n");
-	printf("|    |  |      |   /  |  |\n");
-	printf("|    |  |----  |---   |  |\n");
-	printf("|    |  |      |   \\  |  |\n");
-	printf("|---/   |----  |---/  |  |____\n");
-	printf("\n");
-	sleep(1);
-	}
+typedef union {
+	struct {
+		uint64_t start, time, deadline;
+	};
+	int ind;
+}task_data;
+
+int main() {
+	RT_HEAP hip;
+	rt_heap_bind
 }
